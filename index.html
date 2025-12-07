@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Anniversary SPA — Final (v5)</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Poppins:wght@700;800&family=Great+Vibes&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#fff7fb;
+    --accent1:#ff6b9a; --accent2:#ffb7d0;
+    --muted:#6b4b57;
+    --card-shadow: 0 36px 100px rgba(80,24,54,0.08);
+    --radius:18px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Arial;background:linear-gradient(180deg,var(--bg),#fff);-webkit-font-smoothing:antialiased;color:#2f2030}
+  .app{min-height:100vh;display:flex;flex-direction:column;gap:22px;padding:28px}
+
+  .page{width:100%;display:none;border-radius:18px;padding:18px;background:linear-gradient(180deg,#fff,#fffafc);box-shadow:var(--card-shadow);border:1px solid rgba(230,200,210,0.45)}
+  .page.active{display:block}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;padding:0 6px}
+  .title{font-family:'Poppins',sans-serif;color:#5b2a48;font-size:22px}
+  .smallbtn{background:transparent;border:1px solid rgba(120,80,100,0.08);padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer}
+  .btn{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:white;border:0;padding:12px 16px;border-radius:14px;cursor:pointer;font-weight:800;box-shadow:0 12px 34px rgba(255,107,154,0.12)}
+  .btn.ghost{background:transparent;border:1px solid rgba(120,80,100,0.08);color:var(--muted);font-weight:600}
+
+  /* COVER */
+  .cover-grid{display:flex;gap:32px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  .cover-left{flex:0 0 540px;min-width:300px}
+  .cover-left img{width:100%;height:auto;border-radius:14px;display:block;box-shadow:0 20px 60px rgba(50,20,40,0.06)}
+  .cover-right{flex:1;min-width:360px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:6px}
+  .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px}
+  .prop-date{font-size:30px;font-weight:800;color:#6c2a48;margin-top:4px}
+  .since-title{font-size:13px;color:var(--muted)}
+  .since-date{font-weight:700;color:#5b2a48}
+  .counter{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+  .time-part{background:linear-gradient(180deg,#fff,#fff8fb);padding:12px 14px;border-radius:14px;min-width:92px;text-align:center;border:1px solid rgba(220,190,205,0.45)}
+  .time-part .num{font-weight:900;color:#5b2a48;font-size:22px}
+  .controls{display:flex;gap:12px;margin-top:18px}
+
+  /* OUR STORY */
+  .story-grid-wrap{padding:8px}
+  .top-card{display:flex;gap:18px;align-items:center;background:linear-gradient(180deg,#fff,#fffafc);border-radius:14px;padding:18px;margin-bottom:18px;border:1px solid rgba(230,200,210,0.45);box-shadow:0 18px 48px rgba(80,20,50,0.04)}
+  .top-thumb{flex:0 0 60px; width:60px; height:60px; border-radius:12px; overflow:hidden; background:#fff}
+  .top-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .top-body h3{margin:0;font-size:22px;color:#5b2a48;font-family:'Poppins',sans-serif}
+  .top-body p{margin:8px 0 0;color:#4b3742;line-height:1.5}
+
+  .three-row{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:18px}
+  @media(max-width:1000px){ .three-row{grid-template-columns:repeat(2,1fr)} }
+  @media(max-width:640px){ .three-row{grid-template-columns:1fr} }
+
+  .card-sm{display:flex;gap:12px;align-items:flex-start;padding:16px;border-radius:12px;background:linear-gradient(180deg,#fff,#fffafc);border:1px solid rgba(230,200,210,0.45);box-shadow:0 12px 34px rgba(80,20,50,0.04)}
+  .card-thumb{flex:0 0 84px;width:84px;height:84px;border-radius:12px;overflow:hidden}
+  .card-thumb img{width:100%;height:100%;object-fit:cover}
+  .card-meta h4{margin:0;font-size:16px;color:#5b2a48}
+  .card-meta p{margin:8px 0 0;color:#4b3742;font-size:14px;line-height:1.45}
+
+  .bottom-card{display:flex;gap:18px;align-items:center;padding:16px;border-radius:14px;background:linear-gradient(180deg,#fff,#fffafc);border:1px solid rgba(230,200,210,0.45);box-shadow:0 18px 48px rgba(80,20,50,0.04)}
+  .bottom-thumb{flex:0 0 120px;width:120px;height:120px;border-radius:12px;overflow:hidden}
+  .bottom-thumb img{width:100%;height:100%;object-fit:cover}
+  .bottom-body h3{margin:0;font-size:18px;color:#5b2a48}
+  .bottom-body p{margin:8px 0 0;color:#4b3742;line-height:1.5}
+
+  /* PROMISES — updated content */
+  .prom-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:8px}
+  @media(max-width:880px){.prom-grid{grid-template-columns:1fr}}
+  .prom-card{display:flex;gap:12px;align-items:flex-start;padding:16px;border-radius:12px;background:linear-gradient(180deg,#fff,#fffafc);box-shadow:0 18px 50px rgba(70,20,50,0.06);border:1px solid rgba(220,190,205,0.45)}
+  .prom-icon{width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#fff1f7,#ffe6f0);font-size:24px}
+  .prom-text h4{margin:0;font-size:16px;color:#5b2a48}
+  .prom-text p{margin:6px 0 0;color:#4b3742}
+  .final-promise{grid-column:1/-1;padding:24px;border-radius:18px;text-align:center;background:linear-gradient(180deg,#ffd6e8,#ffc4dc);box-shadow:0 30px 90px rgba(255,120,160,0.18);border:1px solid rgba(220,120,150,0.55)}
+  .final-promise h3{font-family:'Poppins',sans-serif;margin:0 0 10px;font-size:22px;color:#6b2d48}
+  .final-promise p{margin:0;color:#543344;font-size:16px;line-height:1.45}
+
+  /* LOVE PAGE */
+  .love-page{min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;text-align:center}
+  .love-note{font-family:'Great Vibes',cursive;font-size:44px;font-style:italic;color:#7a2a52;letter-spacing:1px;line-height:1.1;max-width:90%;margin:0 auto}
+  @media(max-width:980px){ .love-note{font-size:34px} }
+  @media(max-width:560px){ .love-note{font-size:26px} }
+
+  /* audio badge */
+  .audio-badge{position:fixed;right:18px;bottom:18px;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:white;padding:10px 12px;border-radius:999px;box-shadow:0 12px 40px rgba(255,107,154,0.14);display:flex;align-items:center;gap:8px;cursor:pointer;z-index:999}
+  .audio-dot{width:10px;height:10px;border-radius:50%;background:white}
+  .audio-dot.pulse{animation:pulse 1200ms infinite}
+  @keyframes pulse{0%{transform:scale(.9);opacity:.9}50%{transform:scale(1.25);opacity:1}100%{transform:scale(.9);opacity:.9}}
+</style>
+</head>
+<body>
+  <div class="app">
+
+    <!-- audio -->
+    <audio id="bgAudio" preload="metadata">
+      <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- COVER (hint text removed) -->
+    <section id="cover" class="page active" aria-label="Cover">
+      <div class="topbar">
+        <div class="title" style="font-size:24px">Cover</div>
+        <div></div>
+      </div>
+
+      <div class="cover-grid">
+        <div class="cover-left">
+          <img src="cover_heart.jpg" alt="cover heart" onerror="this.style.display='none';this.parentNode.innerHTML='<div style=&quot;padding:26px;border-radius:14px;background:#fff0f6;color:#6b2740&quot;>cover_heart.jpg missing</div>'">
+        </div>
+
+        <div class="cover-right">
+          <div class="label">Proposal moment</div>
+          <div class="prop-date" id="propDate">05/11/2025</div>
+
+          <div class="since-title">Together since</div>
+          <div class="since-date" id="sinceFull">05/11/2025</div>
+
+          <div class="counter" aria-live="polite">
+            <div class="time-part"><div class="num" id="cd-days">0</div><div class="unit">Days</div></div>
+            <div class="time-part"><div class="num" id="cd-hours">00</div><div class="unit">Hours</div></div>
+            <div class="time-part"><div class="num" id="cd-minutes">00</div><div class="unit">Minutes</div></div>
+            <div class="time-part"><div class="num" id="cd-seconds">00</div><div class="unit">Seconds</div></div>
+          </div>
+
+          <div class="controls">
+            <button id="coverNext" class="btn">Next</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OUR STORY -->
+    <section id="our-story" class="page" aria-label="Our Story">
+      <div class="topbar">
+        <div class="title">Our Story</div>
+        <div>
+          <button class="smallbtn" id="storyPrev">Prev</button>
+          <button class="smallbtn" id="storyNextTop">Next</button>
+        </div>
+      </div>
+
+      <div class="story-grid-wrap">
+        <div class="top-card" role="article" aria-label="How it began">
+          <div class="top-thumb">
+            <img src="howitbegan.png" alt="How it began" onerror="this.style.display='none';this.parentNode.innerHTML='<div style=&quot;padding:14px;text-align:center;color:#8b5f73&quot;>howitbegan.png missing</div>'">
+          </div>
+          <div class="top-body">
+            <h3>How it began</h3>
+            <p>Jab hum mile tab sab normal tha — sirf simple si friendship. Phir hum baatein karne lage, time spend karne lage… aur dheere-dheere ek doosre ki aadat si ban gaye. 🥹🫠</p>
+          </div>
+        </div>
+
+        <div class="three-row" role="list" aria-label="story highlights">
+          <article class="card-sm" role="listitem" aria-label="First hangout">
+            <div class="card-thumb"><img src="firsthangout.png" alt="first hangout" onerror="this.style.display='none';this.parentNode.innerHTML='<div style=&quot;padding:12px;text-align:center;color:#8b5f73&quot;>firsthangout.png missing</div>'"></div>
+            <div class="card-meta">
+              <h4>First hangout</h4>
+              <p>Pehli baar mile tab hum aapka favourite meethai laaye the. Uufff… woh pehli baar milna, aur meethai khane ke baad aapka expression — can never forget that moment. 🫠</p>
+            </div>
+          </article>
+
+          <article class="card-sm" role="listitem" aria-label="Best hangout">
+            <div class="card-thumb"><img src="bho_time.jpg" alt="best hangout" onerror="this.style.display='none';this.parentNode.innerHTML='<div style=&quot;padding:12px;text-align:center;color:#8b5f73&quot;>bho_time.jpg missing</div>'"></div>
+            <div class="card-meta">
+              <h4>Best hangout</h4>
+              <p>Best toh har hangout hota hai… bas aap sath hone chahiye. Par woh mid-term ke baad ghumne jaana… aur sham ko aapko phool dena — that was perfect. 🫠🎀</p>
+            </div>
+          </article>
+
+          <article class="card-sm" role="listitem" aria-label="Proposal">
+            <div class="card-thumb"><img src="proposal.jpg" alt="proposal" onerror="this.style.display='none';this.parentNode.innerHTML='<div style=&quot;padding:12px;text-align:center;color:#8b5f73&quot;>proposal.jpg missing</div>'"></div>
+            <div class="card-meta">
+              <h4>Proposal</h4>
+              <p>Propose karne wali raat… I was so nervous. Darr bhi lag raha tha, par woh ek chance lena worth it tha. And I’m never going to regret that decision — ever. 🥹🩷</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="bottom-card" aria-label="Favourite thing about You">
+          <div class="bottom-thumb"><img src="fav_you.jpg" alt="fav you" onerror="this.style.display='none';this.parentNode.innerHTML='<div style=&quot;padding:14px;text-align:center;color:#8b5f73&quot;>fav_you.jpg missing</div>'"></div>
+          <div class="bottom-body">
+            <h3>Favourite thing about You</h3>
+            <p>Favourite thing? Aapki toh har ek chiz mujhe acchi lagti hai. Par aapka helping nature — sach me aapke personality par char-chaand laga deta. Aur haan, mera favourite: aapka mere saamne sharmana… baccha ban jaana… I love that. 🥹👉🏼👈🏼</p>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:18px">
+          <button class="btn ghost" id="storyPrevBottom">Prev</button>
+          <button class="btn" id="storyNextBottom">Next</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PROMISES (updated text, removed #4 & #5) -->
+    <section id="promises" class="page" aria-label="Promises">
+      <div class="topbar">
+        <div class="title" style="font-size:22px">Kuch vaade jo mai karna chahta hoon</div>
+        <div>
+          <button class="smallbtn" id="promPrev">Prev</button>
+          <button class="smallbtn" id="promNext">Next</button>
+        </div>
+      </div>
+
+      <main>
+        <section class="prom-grid">
+          <article class="prom-card">
+            <div class="prom-icon">💗</div>
+            <div class="prom-text">
+              <h4>Promise</h4>
+              <p>Chahe aap kuch bolna chahe ya bas sunne ke liye koi chahiye ho.... I'll always be there to listen and understand You.</p>
+            </div>
+          </article>
+
+          <article class="prom-card">
+            <div class="prom-icon">💗</div>
+            <div class="prom-text">
+              <h4>Promise</h4>
+              <p>Chahe distance ho ya tough day, Aap kabhi bhi akele nhi honge. I'll always be with You.</p>
+            </div>
+          </article>
+
+          <article class="prom-card">
+            <div class="prom-icon">💗</div>
+            <div class="prom-text">
+              <h4>Promise</h4>
+              <p>Kabhi bhi ego aur gusse ko apne Pyaar se bada nhi hone denge. Aap hamesha se mere choice ho aur hamesha rahoge.</p>
+            </div>
+          </article>
+
+          <article class="prom-card">
+            <div class="prom-icon">💗</div>
+            <div class="prom-text">
+              <h4>Promise</h4>
+              <p>Jo bhi chiz Aap mere liye dil se karoge woh mere liye hamesha important rahegi.... and I'll always Love and value it.</p>
+            </div>
+          </article>
+
+          <article class="prom-card">
+            <div class="prom-icon">💗</div>
+            <div class="prom-text">
+              <h4>Promise</h4>
+              <p>Emotionally, Mentally, in Relationship, in every way possible I'll make sure that You feel safe with me.</p>
+            </div>
+          </article>
+
+          <article class="prom-card">
+            <div class="prom-icon">💗</div>
+            <div class="prom-text">
+              <h4>Promise</h4>
+              <p>Thoda extra softness, warmth and care, I'll always try to bring Your smile Back.</p>
+            </div>
+          </article>
+
+          <div class="final-promise">
+            <h3>My most important promise</h3>
+            <p>I’m looking forward to spend… not just some months, not just some years, but my whole life with you. 🥹🎀🩷</p>
+          </div>
+        </section>
+
+        <!-- bottom navigation for Promises page (added) -->
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:18px">
+          <button class="btn ghost" id="promPrevBottom">Prev</button>
+          <button class="btn" id="promNextBottom">Next</button>
+        </div>
+
+      </main>
+    </section>
+
+    <!-- LOVE PAGE -->
+    <section id="love" class="page" aria-label="Love Note">
+      <div class="topbar">
+        <div></div>
+        <div>
+          <button class="smallbtn" id="lovePrev">Prev</button>
+        </div>
+      </div>
+
+      <div class="love-page">
+        <div class="love-note">I Loveee Youuu Sooo Sooo Much Mere pyaare Shonaa.🥹👉🏼👈🏼🩷</div>
+      </div>
+    </section>
+
+    <!-- audio badge -->
+    <div id="audioBadge" class="audio-badge" title="Play / Pause music"><div id="audioDot" class="audio-dot"></div><div id="audioLabel">Play music</div></div>
+
+  </div>
+
+<script>
+/* ---------- SPA NAV ---------- */
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=> p.classList.toggle('active', p.id === id));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* Buttons wiring */
+document.getElementById('storyPrev').addEventListener('click', ()=> showPage('cover'));
+document.getElementById('storyNextTop').addEventListener('click', ()=> showPage('promises'));
+document.getElementById('storyPrevBottom').addEventListener('click', ()=> showPage('cover'));
+document.getElementById('storyNextBottom').addEventListener('click', ()=> showPage('promises'));
+
+document.getElementById('promPrev').addEventListener('click', ()=> showPage('our-story'));
+document.getElementById('promNext').addEventListener('click', ()=> showPage('love'));
+document.getElementById('promPrevBottom').addEventListener('click', ()=> showPage('our-story'));
+document.getElementById('promNextBottom').addEventListener('click', ()=> showPage('love'));
+
+document.getElementById('lovePrev').addEventListener('click', ()=> showPage('promises'));
+
+/* ---------- AUDIO ---------- */
+const audio = document.getElementById('bgAudio');
+audio.loop = false;
+let audioStarted = false;
+const audioBadge = document.getElementById('audioBadge');
+const audioLabel = document.getElementById('audioLabel');
+const audioDot = document.getElementById('audioDot');
+
+async function startAudioOnce(){
+  if(audioStarted) return;
+  await audio.play();
+  audioStarted = true;
+  updateAudioBadge();
+}
+
+function updateAudioBadge(){
+  if(!audioStarted || audio.paused){ audioBadge.classList.add('paused'); audioLabel.textContent = audioStarted ? 'Paused' : 'Play music'; audioDot.classList.remove('pulse'); }
+  else { audioBadge.classList.remove('paused'); audioLabel.textContent = 'Playing'; audioDot.classList.add('pulse'); }
+}
+
+audioBadge.addEventListener('click', async ()=>{
+  if(!audioStarted){
+    try{ await startAudioOnce(); } catch(e){ console.warn('play blocked', e); return; }
+    return;
+  }
+  if(audio.paused) await audio.play(); else audio.pause();
+  updateAudioBadge();
+});
+
+audio.addEventListener('play', updateAudioBadge);
+audio.addEventListener('pause', updateAudioBadge);
+audio.addEventListener('ended', updateAudioBadge);
+
+/* COVER Next: starts audio (gesture) AND navigates */
+document.getElementById('coverNext').addEventListener('click', async ()=>{
+  try{ await startAudioOnce(); } catch(e){ console.warn('play blocked', e); }
+  showPage('our-story');
+});
+
+/* COVER countdown */
+const target = new Date('2025-11-05T00:35:00');
+function pad(n){return String(n).padStart(2,'0')}
+function formatDDMMYYYY(d){return pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear()}
+document.getElementById('propDate').textContent = formatDDMMYYYY(target);
+document.getElementById('sinceFull').textContent = formatDDMMYYYY(target);
+
+function updateCountdown(){
+  const now = new Date();
+  let diff = Math.abs(now - target);
+  const days = Math.floor(diff / (1000*60*60*24)); diff -= days*(1000*60*60*24);
+  const hours = Math.floor(diff / (1000*60*60)); diff -= hours*(1000*60*60);
+  const minutes = Math.floor(diff / (1000*60)); diff -= minutes*(1000*60);
+  const seconds = Math.floor(diff/1000);
+  document.getElementById('cd-days').textContent = days;
+  document.getElementById('cd-hours').textContent = pad(hours);
+  document.getElementById('cd-minutes').textContent = pad(minutes);
+  document.getElementById('cd-seconds').textContent = pad(seconds);
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+/* initial audio label */
+updateAudioBadge();
+</script>
+</body>
+</html>
